@@ -9,8 +9,16 @@ import numpy as np
 
 from nltk import word_tokenize
 from nltk.stem import LancasterStemmer, PorterStemmer
+from nltk.stem import WordNetLemmatizer
 
-class StemmingTokenizer:
+class LemmaTokenizer(object):
+    def __init__(self):
+        self.wnl = WordNetLemmatizer()
+
+    def __call__(self, doc):
+        return [self.wnl.lemmatize(t) for t in word_tokenize(doc)]
+
+class StemTokenizer(object):
     def __init__(self, stemmer_type='Porter'):
         self.stemmer_type = stemmer_type
         if self.stemmer_type == 'Porter':
@@ -35,7 +43,8 @@ class MultiTopicClassifier:
         return TfidfVectorizer(min_df=1,
                                ngram_range=(1, 2),
                                stop_words='english',
-                               # tokenizer=StemmingTokenizer(),
+                               # tokenizer=StemTokenizer(),
+                               # tokenizer=LemmaTokenizer(),
                                strip_accents='unicode',
                                norm='l2'
                                # use_idf=True,
